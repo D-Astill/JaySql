@@ -12,9 +12,30 @@ public class QuickSelect : MonoBehaviour
     public Item selectedItem;
     public Item equiptedItem;
 
+    public Texture bulletTexture;
+    public int maxClip, curClip;
+    public int rowSizeX;
+    public float ammoStartX, ammoStartY, ammoSpacingX, ammoSpacingY, ammoSizeX, ammoSizeY;
+
+    private void Start()
+    {
+        scrH = Screen.height / 9;
+        scrW = Screen.width / 16;
+        curClip = maxClip;
+    }
 
     void Update ()
     {
+        if (curClip > 30)
+        {
+            curClip -= 30;
+            rowSizeX++;
+        }
+        else if (curClip <= 0 && rowSizeX > 0)
+        {
+            rowSizeX--;
+            curClip += 30;
+        }
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             scrH = Screen.height / 9;
@@ -177,7 +198,7 @@ public class QuickSelect : MonoBehaviour
                 GUI.DrawTexture(new Rect(scrW * 7.5f, scrH * 4f, scrW, scrH), selectedItem.IconName);
             }
             //North West
-            GUI.Box(new Rect(scrW * 0, scrH * 0, scrW * 7.5f , scrH * 4), "");
+            GUI.Box(new Rect(scrW * 0, scrH * 0, scrW * 7.5f, scrH * 4), "");
             //North
             GUI.Box(new Rect(scrW * 7.5f, scrH * 0, scrW * 1, scrH * 4), "");
             //North East
@@ -193,7 +214,22 @@ public class QuickSelect : MonoBehaviour
             //South
             GUI.Box(new Rect(scrW * 7.5f, scrH * 5, scrW * 1, scrH * 4), "");
             //South East
-            GUI.Box(new Rect(scrW *8.5f, scrH * 5, scrW * 8f, scrH * 4), "");
+            GUI.Box(new Rect(scrW * 8.5f, scrH * 5, scrW * 8f, scrH * 4), "");
+        }
+        else
+        {
+            for (int r = 0; r < rowSizeX; r++)
+            {
+                for (int c = 0; c < 30; c++)//Column
+                {
+                    GUI.DrawTexture(new Rect(ammoStartX * scrW + c * (ammoSpacingX * scrW), ammoStartY * scrH + r * (ammoSpacingY * scrH), ammoSizeX * scrW, ammoSizeY * scrH), bulletTexture);
+                }
+            }
+            for (int i = 0; i < curClip; i++)
+            {
+                GUI.DrawTexture(new Rect(ammoStartX * scrW + i * (ammoSpacingX * scrW), ammoStartY * scrH + rowSizeX *(ammoSpacingY * scrH), ammoSizeX * scrW, ammoSizeY * scrH), bulletTexture);
+            }
+
         }
     }
 
